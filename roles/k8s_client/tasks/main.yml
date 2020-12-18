@@ -1,0 +1,81 @@
+---
+
+- name: get stable version of kubectl
+  uri:
+    url: https://storage.googleapis.com/kubernetes-release/release/stable.txt
+    return_content: yes
+    body_format: raw
+  register: kubectl_version
+
+- name: install kubectl
+  unarchive:
+    src: https://dl.k8s.io/{{ kubectl_version.content }}/kubernetes-client-linux-amd64.tar.gz
+    creates: /usr/local/bin/kubectl
+    dest: /usr/local/bin/
+    mode: a+x
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    remote_src: yes
+    extra_opts:
+      - --strip=3
+      - --wildcards
+      - '*/kubectl'
+
+- name: completion for kubectl
+  lineinfile:
+    path: ~/.bashrc
+    line: "source <(kubectl completion bash)"
+    state: present
+    insertafter: EOF
+
+- name: install oc
+  unarchive:
+    src: https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz
+    creates: /usr/local/bin/oc
+    dest: /usr/local/bin/
+    mode: a+x
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    remote_src: yes
+    exclude:
+      - README.md
+      - kubectl
+
+- name: completion for oc
+  lineinfile:
+    path: ~/.bashrc
+    line: "source <(oc completion bash)"
+    state: present
+    insertafter: EOF
+
+- name: install k9s
+  unarchive:
+    src: https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_x86_64.tar.gz
+    creates: /usr/local/bin/k9s
+    dest: /usr/local/bin/
+    mode: a+x
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    extra_opts:
+      - --wildcards
+      - k9s
+    remote_src: yes
+
+- name: get helm installation code
+  uri:
+    url: https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+    return_content: yes
+    body_format: raw
+  register: helm_code
+
+- name: install helm
+  shell:
+    cmd: "{{ helm_code.content }}"
+    creates: /usr/local/bin/helm
+
+- name: completion for helm
+  lineinfile:
+    path: ~/.bashrc
+    line: "source <(helm completion bash)"
+    state: present
+    insertafter: EOF

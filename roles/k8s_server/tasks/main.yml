@@ -1,0 +1,15 @@
+---
+
+- name: install minikube
+  uri:
+    url: https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+    creates: /usr/local/bin/minikube
+    dest: /usr/local/bin/minikube
+    mode: a+x
+
+- name: completion for minikube
+  lineinfile:
+    path: ~/.bashrc
+    line: "source <(minikube completion bash)"
+    state: present
+    insertafter: EOF
