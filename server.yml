@@ -1,5 +1,8 @@
 - hosts: all
 
   roles:
+    - general
+    - ssh
+    - libvirt
     - k8s_server
     - k8s_client

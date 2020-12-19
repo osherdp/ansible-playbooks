@@ -1,4 +1,6 @@
 - hosts: all
 
   roles:
+    - general
+    - ssh
     - k8s_client

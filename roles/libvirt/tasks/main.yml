@@ -1,0 +1,44 @@
+---
+
+- name: make sure CPU supports virtualization
+  shell: "grep -E '(vmx|svm)' /proc/cpuinfo"
+  changed_when: false
+
+- name: install virtualization modules on Fedora
+  when: ansible_distribution == 'Fedora'
+  package:
+    name: "@virtualization"
+    state: present
+
+- name: install virtualization modules on CentOS/RHEL
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - qemu-kvm
+    - qemu-img
+    - libvirt
+    - libvirt-devel
+    - python3-libvirt
+    - virt-install
+    - libvirt-nss
+
+# old versions of libgcrypt makes 'virt-install' return "Host does not support any virtualization options"
+- name: upgrade libgcrypt
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+  package:
+    name: libgcrypt
+    state: latest
+
+- name: start libvirt service
+  systemd:
+    name: libvirtd
+    state: started
+    enabled: yes
+
+- name: add libvirt-nss plugin to nsswitch config
+  replace:
+    path: /etc/nsswitch.conf
+    regexp: '(?!.* libvirt$)(^hosts:.*$)'
+    replace: '\1 libvirt'

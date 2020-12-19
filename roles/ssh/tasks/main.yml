@@ -1,0 +1,31 @@
+---
+
+- name: allow longer SSH sessions on server side
+  blockinfile:
+    path: /etc/ssh/sshd_config
+    block: |
+      tcpkeepalive no
+      clientaliveinterval 30
+      clientalivecountmax 240
+
+    state: present
+    create: yes
+
+- name: get ssh 'alive' configurations
+  shell: "sshd -T"
+  changed_when: false
+  register: actual_config
+
+- name: restart SSH daemon
+  systemd:
+    name: sshd
+    state: restarted
+  when: |
+    "tcpkeepalive no" not in actual_config.stdout or
+    "clientaliveinterval 30" not in actual_config.stdout or
+    "clientalivecountmax 240" not in actual_config.stdout
+
+- name: generate SSH keys
+  community.crypto.openssh_keypair:
+    path: ~/.ssh/id_rsa
+    force: no

@@ -13,3 +13,6 @@
     line: "source <(minikube completion bash)"
     state: present
     insertafter: EOF
+
+- name: run minikube
+  shell: minikube status || minikube start --driver=kvm2 --memory=8192 --cpus=4 --force

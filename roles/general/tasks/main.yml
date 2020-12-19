@@ -1,0 +1,102 @@
+---
+
+- name: install bash completion
+  package:
+    name: bash-completion
+    state: present
+
+- name: make completions based on prefix
+  blockinfile:
+    path: ~/.inputrc
+    block: |
+      $include /etc/inputrc
+      "\e[A": history-search-backward
+      "\e[B": history-search-forward
+      "\C-p": history-search-backward
+      "\C-n": history-search-forward
+
+    state: present
+    create: yes
+
+- name: install development packages
+  package:
+   name: "{{ item }}"
+   state: present
+  with_items:
+    - vim
+    - git
+    - gcc
+    - podman
+
+- name: add alias 'st' to git
+  git_config:
+    name: alias.st
+    scope: global
+    value: status
+
+- name: get golang installation binary
+  uri:
+    url: https://storage.googleapis.com/golang/getgo/installer_linux
+    creates: /tmp/golang_installer
+    dest: /tmp/golang_installer
+    mode: a+x
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: install golang
+  become: yes
+  shell:
+    cmd: /tmp/golang_installer
+    creates: "~/.go/bin/go"
+
+- name: install python3
+  package:
+    name: python3
+    state: present
+
+- name: get pip installation code
+  uri:
+    url: https://bootstrap.pypa.io/get-pip.py
+    creates: /tmp/get-pip.py
+    dest: /tmp/get-pip.py
+    mode: a+x
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: install pip
+  become: yes
+  shell:
+    cmd: python3 /tmp/get-pip.py
+    creates: /usr/local/bin/pip
+
+- name: install pipx
+  pip:
+    name: pipx
+    state: present
+
+- name: pipx ensurepath
+  shell: python3 -m pipx ensurepath
+
+- name: install python3-argcomplete
+  package:
+    name: python3-argcomplete
+    state: present
+
+- name: completion for pipx
+  lineinfile:
+    path: ~/.bashrc
+    line: "eval $(register-python-argcomplete pipx)"
+    state: present
+    insertafter: EOF
+
+- name: install skipper
+  shell:
+    cmd: pipx install strato-skipper
+    creates: ~/.local/bin/skipper
+
+- name: completion for skipper
+  lineinfile:
+    path: ~/.bashrc
+    line: "source <(skipper completion)"
+    state: present
+    insertafter: EOF
