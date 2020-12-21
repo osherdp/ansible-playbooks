@@ -100,3 +100,9 @@
     line: "source <(skipper completion)"
     state: present
     insertafter: EOF
+
+- name: set SELinux to permissive mode
+  become: yes
+  selinux:
+    policy: targeted
+    state: permissive
