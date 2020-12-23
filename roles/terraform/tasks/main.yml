@@ -1,0 +1,48 @@
+---
+
+- name: fetch latest version tag of terraform
+  uri:
+    url: https://api.github.com/repos/hashicorp/terraform/releases/latest
+    headers:
+      Content-Type: application/json
+    return_content: yes
+  register: terraform_version_response
+
+- name: parse terraform version response
+  set_fact:
+    terraform_version: "{{ (terraform_version_response.content | from_json).tag_name | replace('v', '') }}"
+
+- name: install unzip program
+  package:
+    name: unzip
+    state: present
+
+- name: install terraform
+  unarchive:
+    src: https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_amd64.zip
+    creates: /usr/local/bin/terraform
+    dest: /usr/local/bin/
+    mode: a+x
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    remote_src: yes
+
+- name: create terraform plugins dir
+  file:
+    path: "~/.terraform.d/plugins/"
+    state: directory
+
+- name: create terraform-provider-libvirt dir
+  file:
+    path: "~/.terraform.d/plugins/registry.terraform.io/dmacvicar/libvirt/0.6.3/linux_amd64/"
+    state: directory
+
+- name: install terraform-provider-libvirt
+  unarchive:
+    src: https://github.com/dmacvicar/terraform-provider-libvirt/releases/download/v0.6.3/terraform-provider-libvirt-0.6.3+git.1604843676.67f4f2aa.Fedora_32.x86_64.tar.gz
+    creates: ~/.terraform.d/plugins/registry.terraform.io/dmacvicar/libvirt/0.6.3/linux_amd64/terraform-provider-libvirt
+    dest: ~/.terraform.d/plugins/registry.terraform.io/dmacvicar/libvirt/0.6.3/linux_amd64/
+    mode: a+x
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    remote_src: yes

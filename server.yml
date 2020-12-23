@@ -4,5 +4,6 @@
     - general
     - ssh
     - libvirt
+    - terraform
     - k8s_server
     - k8s_client
