@@ -32,10 +32,25 @@
     state: latest
 
 - name: start libvirt service
-  systemd:
+  service:
     name: libvirtd
     state: started
     enabled: yes
+
+- name: use root as QEMU's user
+  lineinfile:
+    line: 'user = "root"'
+    regexp: '$user = ".+"'
+    path: /etc/libvirt/qemu.conf
+    state: present
+    backup: yes
+  register: libvirt_config
+
+- name: restart libvirt if configuration change occurred
+  service:
+    name: libvirtd
+    state: restarted
+  when: libvirt_config.changed
 
 - name: add libvirt-nss plugin to nsswitch config
   replace:
