@@ -1,0 +1,30 @@
+---
+
+- name: install podman
+  package:
+   name: podman
+   state: present
+
+- name: create podman directories
+  file:
+    name: "{{ item }}"
+    state: directory
+  with_items:
+    - /home/var/lib/containers/storage
+    - /home/var/run/containers/storage
+
+- name: change podman temporary storage location
+  lineinfile:
+    line: 'runroot = "/home/var/run/containers/storage"'
+    regexp: 'runroot = ".+"'
+    path: /etc/containers/storage.conf
+    state: present
+    backup: yes
+
+- name: change podman primary R/W location
+  lineinfile:
+    line: 'graphroot = "/home/var/lib/containers/storage"'
+    regexp: 'graphroot = ".+"'
+    path: /etc/containers/storage.conf
+    state: present
+    backup: yes

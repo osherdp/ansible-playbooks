@@ -2,8 +2,10 @@
 
   roles:
     - general
+    - podman
     - ssh
     - libvirt
     - terraform
     - k8s_server
     - k8s_client
+    - assisted-test-infra

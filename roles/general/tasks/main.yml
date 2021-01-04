@@ -18,6 +18,12 @@
     state: present
     create: yes
 
+- name: enable EPEL package
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+  package:
+    name: epel-release
+    state: present
+
 - name: install development packages
   package:
    name: "{{ item }}"
@@ -26,7 +32,7 @@
     - vim
     - git
     - gcc
-    - podman
+    - htop
 
 - name: add alias 'st' to git
   git_config:
@@ -47,6 +53,7 @@
   become: yes
   shell:
     cmd: /tmp/golang_installer
+    executable: /bin/bash
     creates: "~/.go/bin/go"
 
 - name: install python3

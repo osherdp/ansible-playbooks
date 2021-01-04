@@ -1,0 +1,50 @@
+---
+
+- name: ensuring a checkout of matchbox exists
+  git:
+    repo: 'https://github.com/poseidon/matchbox.git'
+    dest: /home/test/matchbox
+    update: no
+
+- name: create matchbox server directory
+  file:
+    path: /etc/matchbox
+    state: directory
+
+- name: create matchbox client directory
+  file:
+    path: ~/.matchbox
+    state: directory
+
+- name: create matchbox assets directory
+  file:
+    path: /home/var/lib/matchbox/assets
+    state: directory
+
+- name: set SAN (Subject Alt Names) value for domain names
+  set_fact:
+    san: "DNS.1:{{ ansible_fqdn }},DNS.2:{{ ansible_hostname }},DNS.3:localhost"
+
+- name: set IP facts
+  set_fact:
+    san: "{{ san }},IP.{{ index + 1 }}:{{ item }}"
+  loop: "{{ ansible_all_ipv4_addresses }}"
+  loop_control:
+    index_var: index
+
+- name: generate certificates
+  shell:
+    chdir: /home/test/matchbox/scripts/tls/
+    cmd: "SAN={{ san }} ./cert-gen && cp ca.crt server.crt server.key /etc/matchbox/ && cp client.crt client.key ca.crt ~/.matchbox/"
+    creates: /etc/matchbox/server.crt
+
+- name: run matchbox
+  containers.podman.podman_container:
+    name: matchbox
+    image: quay.io/poseidon/matchbox:v0.9.0
+    command: "-address=0.0.0.0:9090 -rpc-address=0.0.0.0:9091 -log-level=debug"
+    state: present
+    network: host
+    volume:
+      - "/home/var/lib/matchbox:/var/lib/matchbox"
+      - "/etc/matchbox:/etc/matchbox:ro"
