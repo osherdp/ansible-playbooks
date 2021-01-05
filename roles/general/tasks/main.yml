@@ -52,7 +52,7 @@
 - name: install golang
   become: yes
   shell:
-    cmd: /tmp/golang_installer
+    cmd: SHELL=/bin/bash /tmp/golang_installer
     executable: /bin/bash
     creates: "~/.go/bin/go"
 
