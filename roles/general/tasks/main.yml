@@ -1,6 +1,7 @@
 ---
 
 - name: install bash completion
+  become: yes
   package:
     name: bash-completion
     state: present
@@ -20,11 +21,13 @@
 
 - name: enable EPEL package
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+  become: yes
   package:
     name: epel-release
     state: present
 
 - name: install development packages
+  become: yes
   package:
    name: "{{ item }}"
    state: present
@@ -57,6 +60,7 @@
     creates: "~/.go/bin/go"
 
 - name: install python3
+  become: yes
   package:
     name: python3
     state: present
@@ -77,14 +81,16 @@
     creates: /usr/local/bin/pip
 
 - name: install pipx
+  become: yes
   pip:
     name: pipx
     state: present
 
 - name: pipx ensurepath
-  shell: python3 -m pipx ensurepath
+  shell: pipx ensurepath
 
 - name: install python3-argcomplete
+  become: yes
   package:
     name: python3-argcomplete
     state: present
@@ -107,9 +113,3 @@
     line: "source <(skipper completion)"
     state: present
     insertafter: EOF
-
-- name: set SELinux to permissive mode
-  become: yes
-  selinux:
-    policy: targeted
-    state: permissive

@@ -1,0 +1,11 @@
+---
+
+- name: create ~/.ssh dir
+  file:
+    path: ~/.ssh
+    state: directory
+
+- name: generate SSH keys
+  community.crypto.openssh_keypair:
+    path: ~/.ssh/id_rsa
+    force: no
