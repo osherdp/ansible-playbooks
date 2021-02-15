@@ -2,5 +2,5 @@
 
   roles:
     - general
-    - ssh
+    - ssh_client
     - k8s_client

@@ -24,13 +24,3 @@
     "tcpkeepalive no" not in actual_config.stdout or
     "clientaliveinterval 30" not in actual_config.stdout or
     "clientalivecountmax 240" not in actual_config.stdout
-
-- name: create ~/.ssh dir
-  file:
-    path: ~/.ssh
-    state: directory
-
-- name: generate SSH keys
-  community.crypto.openssh_keypair:
-    path: ~/.ssh/id_rsa
-    force: no

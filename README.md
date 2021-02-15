@@ -20,6 +20,16 @@ pip install ansible
 
 ## Usage
 
+Run locally the workstation's playbook:
+```
+ansible-playbook --connection=local -i localhost, -u $USER -K workstation.yml
+```
+
+Run locally the server's playbook:
+```
+ansible-playbook --connection=local -i localhost, -u $USER -K server.yml
+```
+
 ### Matchbox
 
 ```

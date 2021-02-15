@@ -8,6 +8,7 @@
   register: kubectl_version
 
 - name: install kubectl
+  become: yes
   unarchive:
     src: https://dl.k8s.io/{{ kubectl_version.content }}/kubernetes-client-linux-amd64.tar.gz
     creates: /usr/local/bin/kubectl
@@ -29,6 +30,7 @@
     insertafter: EOF
 
 - name: install oc
+  become: yes
   unarchive:
     src: https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz
     creates: /usr/local/bin/oc
@@ -49,6 +51,7 @@
     insertafter: EOF
 
 - name: install k9s
+  become: yes
   unarchive:
     src: https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_x86_64.tar.gz
     creates: /usr/local/bin/k9s
@@ -68,7 +71,14 @@
     body_format: raw
   register: helm_code
 
+- name: install openssl
+  become: yes
+  package:
+    name: openssl
+    state: present
+
 - name: install helm
+  become: yes
   shell:
     cmd: "{{ helm_code.content }}"
     creates: /usr/local/bin/helm
