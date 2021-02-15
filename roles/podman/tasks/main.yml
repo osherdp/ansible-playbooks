@@ -28,3 +28,22 @@
     path: /etc/containers/storage.conf
     state: present
     backup: yes
+
+- name: install semanage
+  become: yes
+  package:
+    name: policycoreutils-python-utils
+    state: present
+
+- name: change SELinux labels
+  become: yes
+  community.general.sefcontext:
+    target: '/home/var/lib/containers(/.*)?'
+    seuser: system_u
+    setype: lib_t
+    selevel: s0
+    state: present
+
+- name: apply new SELinux file context to filesystem
+  become: yes
+  ansible.builtin.command: restorecon -irv /home/var/lib/containers
