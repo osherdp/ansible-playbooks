@@ -6,17 +6,15 @@
     dest: /home/test/assisted-test-infra
     update: no
 
-- name: build image
-  make:
-    chdir: /home/test/assisted-test-infra
-    target: image_build
-
 - name: configure environment
   make:
     chdir: /home/test/assisted-test-infra
     target: create_full_environment
-    params:
-      NO_MINIKUBE: "true"
+
+- name: build image
+  make:
+    chdir: /home/test/assisted-test-infra
+    target: image_build
 
 - name: install xinet
   package:

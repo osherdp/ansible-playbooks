@@ -35,6 +35,7 @@
     - vim
     - git
     - gcc
+    - make
     - htop
 
 - name: add alias 'st' to git
