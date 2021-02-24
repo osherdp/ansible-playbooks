@@ -11,7 +11,7 @@
     state: present
 
 - name: install virtualization modules on CentOS/RHEL
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' or ansible_distribution == 'RedHat'
   package:
     name: "{{ item }}"
     state: present
@@ -26,7 +26,7 @@
 
 # old versions of libgcrypt makes 'virt-install' return "Host does not support any virtualization options"
 - name: upgrade libgcrypt
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' or ansible_distribution == 'RedHat'
   package:
     name: libgcrypt
     state: latest
