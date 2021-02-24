@@ -16,6 +16,7 @@ cd ansible-playbooks
 python3 -m venv .venv
 . .venv/bin/activate
 pip install ansible
+ansible-galaxy collection install community.general
 ```
 
 ## Usage
