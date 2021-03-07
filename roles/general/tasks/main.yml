@@ -19,13 +19,6 @@
     state: present
     create: yes
 
-- name: enable EPEL package
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' or ansible_distribution == 'RedHat'
-  become: yes
-  package:
-    name: epel-release
-    state: present
-
 - name: install development packages
   become: yes
   package:
@@ -36,7 +29,6 @@
     - git
     - gcc
     - make
-    - htop
 
 - name: add alias 'st' to git
   git_config:
