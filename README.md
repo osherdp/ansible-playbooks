@@ -5,7 +5,7 @@
 By docker/podman:
 
 ```
-docker run -it quay.io/odepaz/ansible-playbooks -i <DNS/ip>, -u root -k server.yml
+docker run -it quay.io/odepaz/ansible-playbooks -i <DNS/ip>, -u root -k assisted-test-infra.yml
 ```
 
 From source:
@@ -26,9 +26,14 @@ Run locally the workstation's playbook:
 ansible-playbook --connection=local -i localhost, -u $USER -K workstation.yml
 ```
 
-Run locally the server's playbook:
+Run locally the server's playbook for installing assisted-test-infra:
 ```
-ansible-playbook --connection=local -i localhost, -u $USER -K server.yml
+ansible-playbook --connection=local -i localhost, -u $USER -K assisted-test-infra.yml
+```
+
+Run locally the server's playbook for installing dev-scripts:
+```
+ansible-playbook --connection=local -i localhost, -u $USER -K dev-scripts.yml
 ```
 
 ### Matchbox

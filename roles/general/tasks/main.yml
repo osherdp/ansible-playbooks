@@ -73,31 +73,16 @@
     cmd: python3 /tmp/get-pip.py
     creates: /usr/local/bin/pip
 
-- name: install pipx
-  become: yes
-  pip:
-    name: pipx
-    state: present
-
-- name: pipx ensurepath
-  shell: pipx ensurepath
-
 - name: install python3-argcomplete
   become: yes
   package:
     name: python3-argcomplete
     state: present
 
-- name: completion for pipx
-  lineinfile:
-    path: ~/.bashrc
-    line: "eval $(register-python-argcomplete pipx)"
-    state: present
-    insertafter: EOF
-
 - name: install skipper
+  become: yes
   shell:
-    cmd: pipx install strato-skipper
+    cmd: pip install strato-skipper
     creates: ~/.local/bin/skipper
 
 - name: completion for skipper

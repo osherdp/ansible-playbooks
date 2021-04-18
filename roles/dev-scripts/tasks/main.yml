@@ -1,0 +1,25 @@
+---
+
+- name: copy pip binary for sudo usage
+  become: yes
+  shell:
+    cmd: ln -s /usr/local/bin/pip3 /usr/bin/pip3
+    creates: /usr/bin/pip3
+
+- name: ensuring a checkout of dev-scripts exists
+  git:
+    repo: 'https://github.com/openshift-metal3/dev-scripts.git'
+    dest: /home/test/dev-scripts
+    update: no
+
+- name: copy configuration
+  shell:
+    cmd: "cp /home/test/dev-scripts/config_example.sh /home/test/dev-scripts/config_$USER.sh"
+    creates: "/home/test/dev-scripts/config_$USER.sh"
+
+- name: use working directory in /home partition
+  lineinfile:
+    line: "export WORKING_DIR=/home/dev-scripts"
+    regexp: 'export WORKING_DIR=.+'
+    path: "/home/test/dev-scripts/config_$USER.sh"
+    state: present

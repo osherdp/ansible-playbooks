@@ -3,7 +3,7 @@
 - name: install podman
   package:
    name: podman
-   state: present
+   state: latest
 
 - name: create podman directories
   file:
