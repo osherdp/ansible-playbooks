@@ -5,6 +5,6 @@
     - podman
     - libvirt
     - terraform
-    - k8s_server
+    - minikube
     - k8s_client
     - assisted-test-infra
