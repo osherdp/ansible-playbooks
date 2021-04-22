@@ -25,3 +25,16 @@
   service:
     name: firewalld
     state: started
+
+- name: fetch pull-secret (if exists)
+  shell:
+    cmd: "cat ~/.ssh/authorized_keys | grep pull-secret | cut -d' ' -f 2 | base64 -d || true"
+  register: pull_secret
+
+- name: export PULL_SECRET variable
+  when: pull_secret.stdout != ""
+  lineinfile:
+    line: "export PULL_SECRET={{ pull_secret.stdout }}"
+    regexp: 'export PULL_SECRET=.+'
+    path: "~/.bashrc"
+    state: present
