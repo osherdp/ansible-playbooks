@@ -7,6 +7,12 @@
     body_format: raw
   register: kubectl_version
 
+- name: install tar
+  become: yes
+  package:
+    name: tar
+    state: present
+
 - name: install kubectl
   become: yes
   unarchive:
