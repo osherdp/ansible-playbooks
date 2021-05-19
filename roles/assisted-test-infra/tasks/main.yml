@@ -34,7 +34,7 @@
 - name: export PULL_SECRET variable
   when: pull_secret.stdout != ""
   lineinfile:
-    line: "export PULL_SECRET={{ pull_secret.stdout }}"
+    line: "export PULL_SECRET='{{ pull_secret.stdout }}'"
     regexp: 'export PULL_SECRET=.+'
     path: "~/.bashrc"
     state: present
