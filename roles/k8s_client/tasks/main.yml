@@ -59,7 +59,7 @@
 - name: install k9s
   become: yes
   unarchive:
-    src: https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_x86_64.tar.gz
+    src: https://github.com/derailed/k9s/releases/download/v0.24.10/k9s_v0.24.10_Linux_x86_64.tar.gz
     creates: /usr/local/bin/k9s
     dest: /usr/local/bin/
     mode: a+x
