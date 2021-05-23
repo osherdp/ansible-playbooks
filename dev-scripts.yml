@@ -1,7 +1,6 @@
 - hosts: all
 
   roles:
-    - shell
     - general
     - k8s_client
     - dev-scripts
