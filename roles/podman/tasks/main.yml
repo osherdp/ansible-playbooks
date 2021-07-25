@@ -46,5 +46,6 @@
     state: present
 
 - name: apply new SELinux file context to filesystem
+  when: ansible_selinux is defined and ansible_selinux != False and ansible_selinux.status == 'enabled'
   become: yes
   ansible.builtin.command: restorecon -irv /home/var/lib/containers
