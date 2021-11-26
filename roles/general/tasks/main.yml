@@ -1,5 +1,11 @@
 ---
 
+- name: remove beaker-tasks packages repo
+  become: yes
+  file:
+    name: /etc/yum.repos.d/beaker-tasks.repo
+    state: absent
+
 - name: install bash completion
   become: yes
   package:
