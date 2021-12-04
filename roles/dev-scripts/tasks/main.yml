@@ -1,11 +1,5 @@
 ---
 
-- name: copy pip binary for sudo usage
-  become: yes
-  shell:
-    cmd: ln -s /usr/local/bin/pip3 /usr/bin/pip3
-    creates: /usr/bin/pip3
-
 - name: ensuring a checkout of dev-scripts exists
   git:
     repo: 'https://github.com/openshift-metal3/dev-scripts.git'

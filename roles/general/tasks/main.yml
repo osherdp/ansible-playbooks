@@ -79,6 +79,13 @@
     cmd: python3 /tmp/get-pip.py
     creates: /usr/local/bin/pip
 
+- name: copy pip binary for sudo usage
+  become: yes
+  file:
+    src: /usr/local/bin/pip3
+    dest: /usr/bin/pip3
+    state: link
+
 - name: install python3-argcomplete
   become: yes
   package:
