@@ -56,10 +56,19 @@
     state: present
     insertafter: EOF
 
-- name: install k9s
+- name: download k9s tar.gz
+  uri:
+    url: https://github.com/derailed/k9s/releases/download/v0.25.8/k9s_Linux_x86_64.tar.gz
+    follow_redirects: all
+    creates: /tmp/k9s.tar.gz
+    dest: /tmp/k9s.tar.gz
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: extract k9s binary
   become: yes
   unarchive:
-    src: https://github.com/derailed/k9s/releases/download/v0.24.10/k9s_v0.24.10_Linux_x86_64.tar.gz
+    src: /tmp/k9s.tar.gz
     creates: /usr/local/bin/k9s
     dest: /usr/local/bin/
     mode: a+x
@@ -69,6 +78,11 @@
       - --wildcards
       - k9s
     remote_src: yes
+
+- name: delete /tmp/k9s.tar.gz
+  file:
+    name: /tmp/k9s.tar.gz
+    state: absent
 
 - name: get helm installation code
   uri:
