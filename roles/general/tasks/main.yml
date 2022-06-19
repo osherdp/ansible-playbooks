@@ -65,8 +65,19 @@
     state: present
 
 - name: get pip installation code
+  when: 'not ansible_facts["python_version"].startswith("3.6.")'
   uri:
     url: https://bootstrap.pypa.io/get-pip.py
+    creates: /tmp/get-pip.py
+    dest: /tmp/get-pip.py
+    mode: a+x
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: get pip installation code for Python 3.6
+  when: 'ansible_facts["python_version"].startswith("3.6.")'
+  uri:
+    url: https://bootstrap.pypa.io/pip/3.6/get-pip.py
     creates: /tmp/get-pip.py
     dest: /tmp/get-pip.py
     mode: a+x

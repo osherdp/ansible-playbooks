@@ -23,17 +23,22 @@ ansible-galaxy collection install community.general
 
 Run locally the workstation's playbook:
 ```
-ansible-playbook --connection=local -i localhost, -u $USER -K workstation.yml
+ansible-playbook --connection=local -i localhost, -u $USER workstation.yml
+```
+
+Run remotely the server's playbook for installing assisted-test-infra:
+```
+ansible-playbook -i <dns/ip-address>, -u <target username> assisted-test-infra.yml
 ```
 
 Run locally the server's playbook for installing assisted-test-infra:
 ```
-ansible-playbook --connection=local -i localhost, -u $USER -K assisted-test-infra.yml
+ansible-playbook --connection=local -i localhost, -u $USER assisted-test-infra.yml
 ```
 
 Run locally the server's playbook for installing dev-scripts:
 ```
-ansible-playbook --connection=local -i localhost, -u $USER -K dev-scripts.yml
+ansible-playbook --connection=local -i localhost, -u $USER dev-scripts.yml
 ```
 
 ### Matchbox
