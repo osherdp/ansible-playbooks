@@ -9,7 +9,7 @@
 - name: configure environment
   make:
     chdir: /home/test/assisted-test-infra
-    target: create_full_environment
+    target: setup
 
 - name: build image
   make:
