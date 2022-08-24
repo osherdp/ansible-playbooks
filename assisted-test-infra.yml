@@ -6,4 +6,5 @@
     - libvirt
     - minikube
     - k8s_client
+    - ssh_client
     - assisted-test-infra
