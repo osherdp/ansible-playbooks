@@ -38,3 +38,15 @@
     regexp: 'export PULL_SECRET=.+'
     path: "~/.bashrc"
     state: present
+
+- name: configure SSH login for test-infra VMs
+  blockinfile:
+    path: ~/.ssh/config
+    block: |
+      Host *test-infra*
+        StrictHostKeyChecking no
+        UserKnownHostsFile /dev/null
+        User core
+
+    state: present
+    create: yes
