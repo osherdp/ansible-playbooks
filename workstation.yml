@@ -3,4 +3,7 @@
   roles:
     - general
     - ssh_client
-    - k8s_client
+    - kubectl
+    - oc
+    - k9s
+    - helm

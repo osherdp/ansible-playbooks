@@ -1,0 +1,22 @@
+---
+
+- name: install oc
+  become: yes
+  unarchive:
+    src: https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz
+    creates: /usr/local/bin/oc
+    dest: /usr/local/bin/
+    mode: a+x
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    remote_src: yes
+    exclude:
+      - README.md
+      - kubectl
+
+- name: completion for oc
+  lineinfile:
+    path: ~/.bashrc
+    line: "source <(oc completion bash)"
+    state: present
+    insertafter: EOF

@@ -1,0 +1,36 @@
+---
+
+- name: get stable version of kubectl
+  uri:
+    url: https://storage.googleapis.com/kubernetes-release/release/stable.txt
+    return_content: yes
+    body_format: raw
+  register: kubectl_version
+
+- name: install tar
+  become: yes
+  package:
+    name: tar
+    state: present
+
+- name: install kubectl
+  become: yes
+  unarchive:
+    src: https://dl.k8s.io/{{ kubectl_version.content }}/kubernetes-client-linux-amd64.tar.gz
+    creates: /usr/local/bin/kubectl
+    dest: /usr/local/bin/
+    mode: a+x
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    remote_src: yes
+    extra_opts:
+      - --strip=3
+      - --wildcards
+      - '*/kubectl'
+
+- name: completion for kubectl
+  lineinfile:
+    path: ~/.bashrc
+    line: "source <(kubectl completion bash)"
+    state: present
+    insertafter: EOF

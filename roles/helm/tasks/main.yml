@@ -1,0 +1,28 @@
+---
+
+- name: get helm installation code
+  uri:
+    url: https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+    return_content: yes
+    body_format: raw
+  register: helm_code
+
+# TODO: check if it's really required
+- name: install openssl
+  become: yes
+  package:
+    name: openssl
+    state: present
+
+- name: install helm
+  become: yes
+  shell:
+    cmd: "{{ helm_code.content }}"
+    creates: /usr/local/bin/helm
+
+- name: completion for helm
+  lineinfile:
+    path: ~/.bashrc
+    line: "source <(helm completion bash)"
+    state: present
+    insertafter: EOF

@@ -5,6 +5,9 @@
     - podman
     - libvirt
     - minikube
-    - k8s_client
+    - kubectl
+    - oc
+    - k9s
+    - helm
     - ssh_client
     - assisted-test-infra
