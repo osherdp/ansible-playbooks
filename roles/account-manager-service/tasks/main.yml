@@ -1,0 +1,25 @@
+---
+
+- name: ensuring a checkout of uhc-account-manager exists
+  git:
+    repo: 'https://gitlab.cee.redhat.com/service/uhc-account-manager.git'
+    dest: /home/test/uhc-account-manager
+    update: no
+
+- name: run AMS database
+  containers.podman.podman_container:
+    name: psql-account-manager
+    image: quay.io/enterprisedb/postgresql
+    state: started
+    ports:
+      - "5433:5432"
+    # network: host
+    env:
+      POSTGRES_DB: uhc
+      POSTGRES_USER: uhc_account_manager
+      POSTGRES_PASSWORD: foobar-bizz-buzz
+
+- name: create DB port secret file
+  copy:
+    dest: "/tmp/ams-db-port.secret"
+    content: "5433"

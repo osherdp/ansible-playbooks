@@ -1,0 +1,79 @@
+---
+
+- name: get RedHat's CA
+  uri:
+    url: https://password.corp.redhat.com/RH-IT-Root-CA.crt
+    creates: /etc/pki/ca-trust/source/anchors/Red_Hat_IT_Root_CA.crt
+    dest: /etc/pki/ca-trust/source/anchors/Red_Hat_IT_Root_CA.crt
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: install update-ca-trust
+  package:
+    name: ca-certificates
+    state: present
+
+- name: update CA trust chain
+  command: update-ca-trust
+
+- name: ensuring a checkout of uhc-clusters-service exists
+  git:
+    repo: 'https://gitlab.cee.redhat.com/service/uhc-clusters-service.git'
+    dest: /home/test/uhc-clusters-service
+    update: no
+
+- name: install sshuttle
+  pip:
+    name: sshuttle
+    state: present
+
+- name: bastion tunnel alias
+  lineinfile:
+    path: ~/.bashrc
+    line: 'alias bastion_sshuttle="sshuttle -r odepaz@bastion.ci.int.devshift.net 10.164.0.0/16 10.200.0.0/16 10.201.0.0/16"'
+    state: present
+    insertafter: EOF
+
+- name: check for existing proxy containers
+  containers.podman.podman_container_info:
+    name: ocm-proxy
+  register: proxy_containers
+
+- name: ensure proxy is running
+  when: proxy_containers.containers|length == 0 or not proxy_containers.containers.0.State.Running
+  block:
+    - name: delete stopped proxy container
+      when: proxy_containers.containers|length > 0 and not proxy_containers.containers.0.State.Running
+      make:
+        target: "proxy/teardown"
+        chdir: /home/test/uhc-clusters-service
+    - name: run proxy
+      make:
+        target: "proxy/setup"
+        chdir: /home/test/uhc-clusters-service
+
+- name: run CS database
+  containers.podman.podman_container:
+    name: psql-clusters-service
+    image: quay.io/enterprisedb/postgresql
+    state: started
+    ports:
+      - "5432:5432"
+    # network: host
+    env:
+      POSTGRES_DB: service
+      POSTGRES_USER: service
+      POSTGRES_PASSWORD: service123
+  
+- name: stop restraintd # it binds itself to the 8081 port which the service needs
+  systemd:
+    name: restraintd
+    state: stopped
+
+- name: open port 9000 in firewalld
+  ansible.posix.firewalld:
+    port: 9000/tcp
+    permanent: true
+    state: enabled
+    zone: public
+    immediate: true

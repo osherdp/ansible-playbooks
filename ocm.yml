@@ -1,0 +1,10 @@
+- hosts: all
+
+  roles:
+    # - general
+    # - kubectl
+    # - oc
+    # - k9s
+    # - ssh_client
+    # - clusters-service
+    - account-manager-service
