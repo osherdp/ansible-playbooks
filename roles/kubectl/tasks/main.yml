@@ -8,13 +8,13 @@
   register: kubectl_version
 
 - name: install tar
-  become: yes
+  become: true
   package:
     name: tar
     state: present
 
 - name: install kubectl
-  become: yes
+  become: true
   unarchive:
     src: https://dl.k8s.io/{{ kubectl_version.content }}/kubernetes-client-linux-amd64.tar.gz
     creates: /usr/local/bin/kubectl

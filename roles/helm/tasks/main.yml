@@ -9,13 +9,13 @@
 
 # TODO: check if it's really required
 - name: install openssl
-  become: yes
+  become: true
   package:
     name: openssl
     state: present
 
 - name: install helm
-  become: yes
+  become: true
   shell:
     cmd: "{{ helm_code.content }}"
     creates: /usr/local/bin/helm

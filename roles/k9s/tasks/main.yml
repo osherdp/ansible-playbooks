@@ -10,7 +10,7 @@
     group: "{{ ansible_user }}"
 
 - name: extract k9s binary
-  become: yes
+  become: true
   unarchive:
     src: /tmp/k9s.tar.gz
     creates: /usr/local/bin/k9s

@@ -30,14 +30,14 @@
     backup: yes
 
 - name: install semanage
-  become: yes
+  become: true
   package:
     name: policycoreutils-python-utils
     state: present
 
 - name: change SELinux labels
   when: ansible_selinux is defined and ansible_selinux != False and ansible_selinux.status == 'enabled'
-  become: yes
+  become: true
   community.general.sefcontext:
     target: '/home/var/lib/containers(/.*)?'
     seuser: system_u
@@ -47,5 +47,5 @@
 
 - name: apply new SELinux file context to filesystem
   when: ansible_selinux is defined and ansible_selinux != False and ansible_selinux.status == 'enabled'
-  become: yes
+  become: true
   ansible.builtin.command: restorecon -irv /home/var/lib/containers

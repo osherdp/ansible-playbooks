@@ -1,13 +1,13 @@
 ---
 
 - name: remove beaker-tasks packages repo
-  become: yes
+  become: true
   file:
     name: /etc/yum.repos.d/beaker-tasks.repo
     state: absent
 
 - name: install bash completion
-  become: yes
+  become: true
   package:
     name: bash-completion
     state: present
@@ -26,7 +26,7 @@
     create: yes
 
 - name: install development packages
-  become: yes
+  become: true
   package:
    name: "{{ item }}"
    state: present
@@ -52,14 +52,14 @@
     group: "{{ ansible_user }}"
 
 - name: install golang
-  become: yes
+  become: true
   shell:
     cmd: SHELL=/bin/bash /tmp/golang_installer
     executable: /bin/bash
     creates: "~/.go/bin/go"
 
 - name: install python3
-  become: yes
+  become: true
   package:
     name: python3
     state: present
@@ -85,26 +85,26 @@
     group: "{{ ansible_user }}"
 
 - name: install pip
-  become: yes
+  become: true
   shell:
     cmd: python3 /tmp/get-pip.py
     creates: /usr/local/bin/pip
 
 - name: copy pip binary for sudo usage
-  become: yes
+  become: true
   file:
     src: /usr/local/bin/pip3
     dest: /usr/bin/pip3
     state: link
 
 - name: install python3-argcomplete
-  become: yes
+  become: true
   package:
     name: python3-argcomplete
     state: present
 
 - name: install skipper
-  become: yes
+  become: true
   shell:
     cmd: pip install strato-skipper
     creates: ~/.local/bin/skipper

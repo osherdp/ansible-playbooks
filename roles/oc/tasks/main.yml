@@ -1,7 +1,7 @@
 ---
 
 - name: install oc
-  become: yes
+  become: true
   unarchive:
     src: https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz
     creates: /usr/local/bin/oc
